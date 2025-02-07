@@ -18,6 +18,13 @@ namespace HolaMundo
        static List<string> words_command = new List<string>();
 
        static string command;
+
+       static Dictionary<string, string> types = new Dictionary<string, string>{
+
+            {"echo", "is a shell builtin"},
+            {"exit", "is a shell builtin"}
+
+       };
        
 
         static void Main(string[] args)
@@ -34,8 +41,9 @@ namespace HolaMundo
                 wordToList( command);
 
                 if(command == "exit 0") break;
-                if(words_command[0]=="echo") echo() ;
-                if(NoInvalid==false)wrongCommand();
+                else if(words_command[0]=="echo") echo();
+                else if(words_command[0]=="type") type();
+                else if(NoInvalid==false) wrongCommand();
 
                 
                 
@@ -82,6 +90,22 @@ namespace HolaMundo
 
 
     } 
+
+    static void type(){
+
+        NoInvalid = true;
+        try
+        {
+            Console.WriteLine(words_command[1] + " "+ types[words_command[1]]);
+        }
+        catch (System.Exception)
+        {
+            
+            Console.WriteLine(words_command[1] + ": not found");
+        }
+       
+
+    }
 
 
     }
