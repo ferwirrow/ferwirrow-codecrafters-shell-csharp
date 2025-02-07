@@ -2,6 +2,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Diagnostics;
 
 
 
@@ -43,7 +44,7 @@ namespace HolaMundo
                 if(command == "exit 0") break;
                 else if(words_command[0]=="echo") echo();
                 else if(words_command[0]=="type") type();
-                else if(NoInvalid==false) wrongCommand();
+                else runProgram(words_command[0]);
 
             
                 
@@ -98,7 +99,7 @@ namespace HolaMundo
             Console.WriteLine($"{words_command[1]} is a shell builtin");
 
         }
-        else searchExeInPath(words_command[1]);
+        else Console.WriteLine(searchExeInPath(words_command[1]));
 
         
             
@@ -108,21 +109,40 @@ namespace HolaMundo
 
     }
 
-    static void searchExeInPath(string exe){
+    static string searchExeInPath(string exe){
         
-        string resultado = $"{words_command[1]}: not found";
+        string resultado = $"{exe}: not found";
         string path = Environment.GetEnvironmentVariable("PATH");
         string [] patharray = path.Split(":");
         foreach (string path1 in patharray)
         {
-            if(File.Exists($@"{path1}/{words_command[1]}")){
-                resultado = $@"{path1}/{words_command[1]}";
+            if(File.Exists($@"{path1}/{exe}")){
+                resultado = $@"{path1}/{exe}";
             }  //confirma si existe el nombre del archivo en un nombre
         }
-        Console.WriteLine(resultado);
+        
         NoInvalid = false;
 
+        return resultado;
 
+
+
+    }
+
+    static void runProgram(string name){
+
+
+        
+        try
+        {
+            Process.Start(searchExeInPath(name));
+            Console.WriteLine();
+        }
+        catch (System.Exception)
+        {
+            
+            wrongCommand();
+        }
 
     }
 
