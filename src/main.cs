@@ -45,9 +45,10 @@ namespace HolaMundo
                 else if(words_command[0]=="type") type();
                 else if(NoInvalid==false) wrongCommand();
 
-                string palabra = @$"{words_command[1]}";
+                string palabra = $"{words_command[1]}";
 
                 Console.WriteLine(Path.GetFullPath(palabra));
+                
 
                 
                 
