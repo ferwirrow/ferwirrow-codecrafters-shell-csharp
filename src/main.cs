@@ -45,15 +45,7 @@ namespace HolaMundo
                 else if(words_command[0]=="type") type();
                 else if(NoInvalid==false) wrongCommand();
 
-                string palabra = $"{words_command[1]}";
-
-                Console.WriteLine(Environment.GetEnvironmentVariable("PATH"));
-                Console.WriteLine(File.Exists(@"/bin" +"/"+ words_command[1]) ? "File exists." : "File does not exist.");
-                Console.WriteLine(Path.GetFullPath(words_command[1]));
-                
-
-                
-                
+            
                 
                 }
 
@@ -101,16 +93,36 @@ namespace HolaMundo
     static void type(){
 
         NoInvalid = true;
-        try
-        {
-            Console.WriteLine(words_command[1] + " "+ types[words_command[1]]);
+
+        if(types.ContainsKey(words_command[1]) ){
+            Console.WriteLine($"{words_command[1]} is a shell builtin");
+
         }
-        catch (System.Exception)
-        {
+        else searchExeInPath(words_command[1]);
+
+        
             
-            Console.WriteLine(words_command[1] + ": not found");
-        }
+        
+        
        
+
+    }
+
+    static void searchExeInPath(string exe){
+        
+        string resultado = $"{words_command[1]}: not found";
+        string path = Environment.GetEnvironmentVariable("PATH");
+        string [] patharray = path.Split(":");
+        foreach (string path1 in patharray)
+        {
+            if(File.Exists($@"{path1}/{words_command[1]}")){
+                resultado = $@"{path1}/{words_command[1]}";
+            }  //confirma si existe el nombre del archivo en un nombre
+        }
+        Console.WriteLine(resultado);
+        NoInvalid = false;
+
+
 
     }
 
