@@ -1,10 +1,8 @@
-using System.Net;
-using System.Net.Sockets;
+
 using System;
-using System.Security.Cryptography.X509Certificates;
-using System.Data;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.IO;
+
 
 
 
@@ -46,6 +44,8 @@ namespace HolaMundo
                 else if(words_command[0]=="echo") echo();
                 else if(words_command[0]=="type") type();
                 else if(NoInvalid==false) wrongCommand();
+
+                Console.WriteLine(Directory.GetCurrentDirectory());
 
                 
                 
