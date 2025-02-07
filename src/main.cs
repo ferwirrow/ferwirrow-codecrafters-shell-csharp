@@ -49,7 +49,7 @@ namespace HolaMundo
 
                 Console.WriteLine(Environment.GetEnvironmentVariable("PATH"));
                 Console.WriteLine(File.Exists(@"/bin" +"/"+ words_command[1]) ? "File exists." : "File does not exist.");
-
+                Console.WriteLine(Path.GetFullPath("cat"));
                 
 
                 
