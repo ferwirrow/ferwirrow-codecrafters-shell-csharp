@@ -7,7 +7,7 @@ bool invalid = false;
 
 
 
-while (command != "quit()")
+while (command != "exit 0")
 {
     Console.Write("$ ");
     command = Console.ReadLine();
