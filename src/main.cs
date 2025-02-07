@@ -22,7 +22,9 @@ namespace HolaMundo
        static Dictionary<string, string> types = new Dictionary<string, string>{
 
             {"echo", "is a shell builtin"},
-            {"exit", "is a shell builtin"}
+            {"exit", "is a shell builtin"},
+            {"type", "is a shell builtin"},
+
 
        };
        
