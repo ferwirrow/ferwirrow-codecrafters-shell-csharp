@@ -3,6 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 
 
 
@@ -15,6 +16,8 @@ namespace HolaMundo
        static string pattern = @"\w+";
        static bool NoInvalid = false;
        static List<string> words_command = new List<string>();
+
+       static string arguments;
 
        static string command;
 
@@ -40,11 +43,12 @@ namespace HolaMundo
                 Console.Write("$ ");
                 command = Console.ReadLine();
                 wordToList( command);
+                arguments= string.Join(" ", words_command[1..]);
 
                 if(command == "exit 0") break;
                 else if(words_command[0]=="echo") echo();
                 else if(words_command[0]=="type") type();
-                else runProgram(words_command[0]);
+                else runProgram(words_command[0], arguments);
 
             
                 
@@ -129,14 +133,17 @@ namespace HolaMundo
 
     }
 
-    static void runProgram(string name){
+    static void runProgram(string name, string argument){
 
 
         
         try
         {
-            Process.Start(name);
-            Console.WriteLine("");
+            ProcessStartInfo startinfo = new ProcessStartInfo();
+            startinfo.FileName = name;
+            startinfo.Arguments = argument;
+            Process.Start(startinfo);
+
         }
         catch (System.Exception)
         {
