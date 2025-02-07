@@ -47,7 +47,7 @@ namespace HolaMundo
 
                 string palabra = $"{words_command[1]}";
 
-                Console.WriteLine(Path.GetFullPath(palabra));
+                Console.WriteLine(Environment.GetEnvironmentVariable("PATH"));
                 
 
                 
