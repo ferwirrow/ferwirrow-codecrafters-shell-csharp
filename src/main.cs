@@ -1,18 +1,111 @@
 using System.Net;
 using System.Net.Sockets;
-
-string command = "";
-bool invalid = false;
-
-
-
-
+using System;
+using System.Security.Cryptography.X509Certificates;
+using System.Data;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 
-for (;;)
+
+namespace HolaMundo
 {
-    Console.Write("$ ");
-    command = Console.ReadLine();
-    if(command == "exit 0") break;
-    if(invalid== false) Console.WriteLine($"{command}: command not found");
+    class Program
+    {
+     
+       static string pattern = @"\w+";
+       static bool NoInvalid = false;
+       static List<string> words_command = new List<string>();
+
+       static string command;
+       
+
+        static void Main(string[] args)
+        {
+           
+            
+          
+              
+        
+            for (;;)
+                {
+                Console.Write("$ ");
+                command = Console.ReadLine();
+                wordToList( command);
+
+                if(command == "exit 0") break;
+                if(words_command[0]=="echo") echo() ;
+                if(NoInvalid==false)wrongCommand();
+
+                
+                
+                
+                }
+
+
+         
+        }
+
+    
+    static void wordToList( string word ){  // convierte el texto a lista de words
+
+        words_command.Clear();
+        MatchCollection matches = Regex.Matches(word, pattern);
+        foreach (Match match in matches)
+        {
+            words_command.Add(match.Value);
+        }
+
+    }
+
+    
+    static void echo(){
+
+            NoInvalid = true;
+
+            foreach (var word in words_command[1..])
+            {
+                Console.Write(word+ " ");
+
+            }
+
+            Console.WriteLine();
+
+            
+            
+        }    
+
+    static void wrongCommand(){
+
+        Console.WriteLine($"{command}: command not found");
+        
+
+
+    } 
+
+
+    }
 }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+       
+
+    
+
+
+
+
+
+
+
+
+
+
+
