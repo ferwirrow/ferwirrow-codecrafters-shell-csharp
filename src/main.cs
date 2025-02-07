@@ -135,7 +135,7 @@ namespace HolaMundo
         
         try
         {
-            Process.Start(searchExeInPath(words_command[0]));
+            Process.Start(name);
             Console.WriteLine("");
         }
         catch (System.Exception)
