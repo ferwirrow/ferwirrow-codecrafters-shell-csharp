@@ -50,7 +50,7 @@ namespace HolaMundo
                 else if(words_command[0]=="type") type();
                 else runProgram(words_command[0], arguments);
 
-            
+                pad();
                 
                 }
 
@@ -139,10 +139,14 @@ namespace HolaMundo
         
         try
         {
+            
             ProcessStartInfo startinfo = new ProcessStartInfo();
             startinfo.FileName = name;
+            
             startinfo.Arguments = argument;
-            Process.Start(startinfo);
+
+            Process process = Process.Start(startinfo);
+            process.WaitForExit();
 
         }
         catch (System.Exception)
@@ -150,6 +154,13 @@ namespace HolaMundo
             
             wrongCommand();
         }
+
+    }
+
+    static string pad(){
+
+        Console.WriteLine(Path.GetFullPath(" "));
+        return Path.GetTempPath();
 
     }
 
