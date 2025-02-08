@@ -27,6 +27,7 @@ namespace HolaMundo
             {"exit", "is a shell builtin"},
             {"type", "is a shell builtin"},
             {"pwd", "is a shell builtin"},
+            {"cd", "is a shell builtin"},
 
 
        };
@@ -50,6 +51,7 @@ namespace HolaMundo
                 else if(words_command[0]=="echo") echo();
                 else if(words_command[0]=="type") type();
                 else if(words_command[0]=="pwd") pwd();
+                else if(words_command[0]=="cd") cd();
                 else runProgram(words_command[0], arguments);
 
                
@@ -159,10 +161,30 @@ namespace HolaMundo
 
     }
 
-    static string pwd(){
+    static void pwd(){
 
+        
         Console.WriteLine(Directory.GetCurrentDirectory());
-        return Directory.GetCurrentDirectory();
+        
+
+    }
+
+    static int cd(){
+
+        if(words_command.Count()==1)return 0;
+
+        try
+        {
+            Directory.SetCurrentDirectory(words_command[1]);
+
+        }
+        catch (System.Exception)
+        {
+            
+            Console.WriteLine($"cd: {words_command[1]}: No such file or directory");
+            
+        }
+        return 1;
 
     }
 
