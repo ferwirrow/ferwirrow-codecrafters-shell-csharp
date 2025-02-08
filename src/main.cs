@@ -174,16 +174,25 @@ namespace HolaMundo
 
         if(words_command.Count()==1)return 0;
 
-        try
-        {
-            Directory.SetCurrentDirectory(words_command[1]);
+        if(words_command[1]=="~"){
 
+            Directory.SetCurrentDirectory(Environment.GetEnvironmentVariable("HOME"));
         }
-        catch (System.Exception)
+
+        else
         {
-            
-            Console.WriteLine($"cd: {words_command[1]}: No such file or directory");
-            
+            try
+                {
+                Directory.SetCurrentDirectory(words_command[1]);
+
+                }
+            catch (System.Exception)
+                {
+                
+                Console.WriteLine($"cd: {words_command[1]}: No such file or directory");
+                
+                }
+        
         }
         return 1;
 
