@@ -26,6 +26,7 @@ namespace HolaMundo
             {"echo", "is a shell builtin"},
             {"exit", "is a shell builtin"},
             {"type", "is a shell builtin"},
+            {"pwd", "is a shell builtin"},
 
 
        };
@@ -48,9 +49,10 @@ namespace HolaMundo
                 if(command == "exit 0") break;
                 else if(words_command[0]=="echo") echo();
                 else if(words_command[0]=="type") type();
+                else if(words_command[0]=="pwd") pwd();
                 else runProgram(words_command[0], arguments);
 
-                pad();
+               
                 
                 }
 
@@ -157,10 +159,10 @@ namespace HolaMundo
 
     }
 
-    static string pad(){
+    static string pwd(){
 
-        Console.WriteLine(Path.GetFullPath(" "));
-        return Path.GetTempPath();
+        Console.WriteLine(Directory.GetCurrentDirectory());
+        return Directory.GetCurrentDirectory();
 
     }
 
