@@ -13,7 +13,7 @@ namespace HolaMundo
     class Program
     {
      
-       static string pattern = @"\w+";
+       static string pattern = @"\S+";
        static bool NoInvalid = false;
        static List<string> words_command = new List<string>();
 
@@ -65,6 +65,7 @@ namespace HolaMundo
     
     static void wordToList( string word ){  // convierte el texto a lista de words
 
+        
         words_command.Clear();
         MatchCollection matches = Regex.Matches(word, pattern);
         foreach (Match match in matches)
