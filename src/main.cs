@@ -130,10 +130,10 @@ namespace HolaMundo
                 
 
             }
-            if(doubleQuoting== true && word[i]!='\"'){
+            if(doubleQuoting== true && word[i]!='\"' ){
                 wordfinal += word[i];
             }
-             if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0){
+             if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0 && doubleQuoting == false){
                 words_command.Add(wordfinal);
                 
                 wordfinal = "";
@@ -141,6 +141,7 @@ namespace HolaMundo
             }
             
         }
+        Console.WriteLine(words_command.Count);
 
         
         
