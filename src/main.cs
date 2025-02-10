@@ -298,14 +298,15 @@ namespace HolaMundo
     static void runProgramNoarguments(string exe){
         try
         {
-            string name = exe;
+           
 
             if(File.Exists(exe)) Console.WriteLine("existe el exe");
             ProcessStartInfo startinfo = new ProcessStartInfo();
-            startinfo.FileName = name;
+            startinfo.FileName = "cat";
+            startinfo.Arguments = exe;
             
 
-            Process process = Process.Start(exe);
+            Process process = Process.Start(startinfo);
             process.WaitForExit();
         }
         catch (Exception )
