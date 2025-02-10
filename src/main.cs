@@ -60,7 +60,9 @@ namespace HolaMundo
                 
 
              
-
+                if(words_command.Count<1){ //en caso de que no se ingrese texto
+                    continue;
+                }
 
                 if(command == "exit 0") break;
                 else if(words_command[0]=="echo") echo();
@@ -83,6 +85,7 @@ namespace HolaMundo
          words_command.Clear();
 
          bool singlequoting = false;
+         bool doubleQuoting = false;
 
          
          string wordfinal = "";
@@ -95,10 +98,22 @@ namespace HolaMundo
                 
 
             }
-            else if(singlequoting ==false && word[i]=='\''){
+            else if(singlequoting ==false && word[i]=='\'' && doubleQuoting== false){
                 singlequoting = true;
-            }           
-            else if(singlequoting==true)
+                continue;
+            } 
+            if(doubleQuoting==true && word[i]== '"' ){
+                doubleQuoting = false;
+
+            }
+            else if (doubleQuoting==false && word[i]== '"' && singlequoting==false)
+            {
+                doubleQuoting = true;
+            }
+
+           
+                     
+            if(singlequoting==true)
             {
                 if(word[i]=='\\'){
                    // wordfinal += '\\';
@@ -109,11 +124,14 @@ namespace HolaMundo
                 }
                 
             }
-            else if(singlequoting==false && word[i]!= ' '){
+            if(singlequoting==false && word[i]!= ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false){
 
                 wordfinal += word[i];
                 
 
+            }
+            if(doubleQuoting== true && word[i]!='\"'){
+                wordfinal += word[i];
             }
              if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0){
                 words_command.Add(wordfinal);
