@@ -13,7 +13,11 @@ namespace HolaMundo
     class Program
     {
      
-       static string pattern = @"\S+";
+       static string pattern = @"'(.*?)'|\S+";
+       
+
+       
+
        static bool NoInvalid = false;
        static List<string> words_command = new List<string>();
 
@@ -70,8 +74,18 @@ namespace HolaMundo
         MatchCollection matches = Regex.Matches(word, pattern);
         foreach (Match match in matches)
         {
-            words_command.Add(match.Value);
+            if (match.Groups[1].Success)
+            {
+                words_command.Add(match.Groups[1].Value);  // Guardamos el contenido dentro de las comillas
+            }
+            else
+            {
+                words_command.Add(match.Value);  // Guardamos la palabra que está fuera de las comillas
+            }
         }
+
+        
+    
 
     }
 
@@ -79,6 +93,8 @@ namespace HolaMundo
     static void echo(){
 
             NoInvalid = true;
+
+            
 
             foreach (var word in words_command[1..])
             {
@@ -91,6 +107,8 @@ namespace HolaMundo
             
             
         }    
+
+   
 
     static void wrongCommand(){
 
