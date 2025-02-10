@@ -303,7 +303,7 @@ namespace HolaMundo
             if(File.Exists(exe)) Console.WriteLine("existe el exe");
             ProcessStartInfo startinfo = new ProcessStartInfo();
             startinfo.FileName = "cat";
-            startinfo.Arguments = exe;
+            startinfo.Arguments = $"\"{exe}\"";
             
 
             Process process = Process.Start(startinfo);
