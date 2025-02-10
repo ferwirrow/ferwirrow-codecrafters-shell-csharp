@@ -32,6 +32,7 @@ namespace HolaMundo
             {"type", "is a shell builtin"},
             {"pwd", "is a shell builtin"},
             {"cd", "is a shell builtin"},
+            {"cat", "is a shell builtin"},
 
 
        };
@@ -50,7 +51,12 @@ namespace HolaMundo
                 command = Console.ReadLine();
                 wordToList( command);
                 
-                arguments= string.Join(" ", words_command[1..]);
+                if (words_command.Count >1)
+                {
+                    arguments= string.Join(" ", words_command[1..]);
+                
+                }
+                
                 
 
              
@@ -61,6 +67,7 @@ namespace HolaMundo
                 else if(words_command[0]=="type") type();
                 else if(words_command[0]=="pwd") pwd();
                 else if(words_command[0]=="cd") cd();
+                else if(words_command[0]=="cat") cat();
                 else runProgram(words_command[0], arguments);
 
                
@@ -132,9 +139,9 @@ namespace HolaMundo
 
             
 
-            foreach (var word in words_command[1..])
+            foreach (string word in words_command[1..])
             {
-                Console.Write(word+ " ");
+                Console.Write(word);
 
             }
 
@@ -157,29 +164,33 @@ namespace HolaMundo
     static void type(){
 
         NoInvalid = true;
+        
 
-        try
+        foreach (var tipo in words_command[1..])
         {
-            if(types.ContainsKey(words_command[1]) ){
-            Console.WriteLine($"{words_command[1]} is a shell builtin");
-
-            }
-        }
-        catch (System.Exception)
-        {
-            
+             
             try
-            {
-                Console.WriteLine(searchExeInPath(words_command[1]));  //regresa lo que se encontro
+        {
+            if(types.ContainsKey(tipo) ){
+            Console.WriteLine($"{tipo} is a shell builtin");
+            
+
             }
-            catch (System.Exception)
+        }
+            catch (System.Exception ex)
             {
             
             
-        }
+             }
+
+             if (!types.ContainsKey(tipo))
+             {
+                Console.WriteLine(searchExeInPath(tipo)); 
+             }
+             
         }
         
-         
+        
 
         
             
@@ -206,6 +217,16 @@ namespace HolaMundo
         return resultado;
 
 
+
+    }
+
+    static void cat(){
+
+        foreach (var exe in words_command[1..])
+        {
+           runProgramNoarguments(exe); 
+
+        }
 
     }
 
@@ -267,6 +288,19 @@ namespace HolaMundo
         }
         return 1;
 
+    }
+
+    static void runProgramNoarguments(string exe){
+        try
+        {
+            Process process = Process.Start(exe);
+            process.WaitForExit();
+        }
+        catch (Exception )
+        {
+            Console.WriteLine($"{exe}: not found");
+            
+        }
     }
 
 
