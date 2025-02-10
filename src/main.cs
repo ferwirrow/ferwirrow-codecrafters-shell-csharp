@@ -229,7 +229,7 @@ namespace HolaMundo
             
             Console.WriteLine(exe);
             
-           runProgramNoarguments(exe); 
+           runProgramWithCat(exe); 
 
         }
 
@@ -295,12 +295,12 @@ namespace HolaMundo
 
     }
 
-    static void runProgramNoarguments(string exe){
+    static void runProgramWithCat(string exe){
         try
         {
            
 
-            if(File.Exists(exe)) Console.WriteLine("existe el exe");
+           
             ProcessStartInfo startinfo = new ProcessStartInfo();
             startinfo.FileName = "cat";
             startinfo.Arguments = $"\"{exe}\"";
@@ -311,8 +311,8 @@ namespace HolaMundo
         }
         catch (Exception )
         {
-            Console.WriteLine("quien sabe");
-            //Console.WriteLine($"{exe}: not found");
+            
+            Console.WriteLine($"{exe}: not found");
             
         }
     }
