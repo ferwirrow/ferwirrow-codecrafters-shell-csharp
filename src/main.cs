@@ -297,7 +297,11 @@ namespace HolaMundo
     static void runProgramNoarguments(string exe){
         try
         {
-            Process process = Process.Start(exe);
+            ProcessStartInfo startinfo = new ProcessStartInfo();
+            startinfo.FileName = exe;
+            
+
+            Process process = Process.Start(startinfo);
             process.WaitForExit();
         }
         catch (Exception )
