@@ -297,8 +297,10 @@ namespace HolaMundo
     static void runProgramNoarguments(string exe){
         try
         {
+            string name = $"\"{exe}\"";
+            
             ProcessStartInfo startinfo = new ProcessStartInfo();
-            startinfo.FileName = exe;
+            startinfo.FileName = name;
             
 
             Process process = Process.Start(startinfo);
