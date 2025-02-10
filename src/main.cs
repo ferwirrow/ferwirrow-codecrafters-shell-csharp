@@ -297,7 +297,7 @@ namespace HolaMundo
     static void runProgramNoarguments(string exe){
         try
         {
-            string name = "exe";
+            string name = exe;
 
             if(File.Exists(exe)) Console.WriteLine("existe el exe");
             ProcessStartInfo startinfo = new ProcessStartInfo();
