@@ -305,7 +305,7 @@ namespace HolaMundo
             startinfo.FileName = name;
             
 
-            Process process = Process.Start(startinfo);
+            Process process = Process.Start(exe);
             process.WaitForExit();
         }
         catch (Exception )
