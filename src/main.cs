@@ -227,7 +227,7 @@ namespace HolaMundo
         foreach (var exe in words_command[1..])
         {
             
-            if(File.Exists(exe)) Console.WriteLine("existe el exe");
+            
            runProgramNoarguments(exe); 
 
         }
@@ -297,8 +297,9 @@ namespace HolaMundo
     static void runProgramNoarguments(string exe){
         try
         {
-            string name = $"\"{exe}\"";
-            
+            string name = "exe";
+
+            if(File.Exists(exe)) Console.WriteLine("existe el exe");
             ProcessStartInfo startinfo = new ProcessStartInfo();
             startinfo.FileName = name;
             
