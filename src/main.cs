@@ -141,7 +141,7 @@ namespace HolaMundo
 
             foreach (string word in words_command[1..])
             {
-                Console.Write(word);
+                Console.Write(word + " ");
 
             }
 
