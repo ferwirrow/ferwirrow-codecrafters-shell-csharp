@@ -32,7 +32,7 @@ namespace HolaMundo
             {"type", "is a shell builtin"},
             {"pwd", "is a shell builtin"},
             {"cd", "is a shell builtin"},
-            {"cat", "is a shell builtin"},
+            
 
 
        };
