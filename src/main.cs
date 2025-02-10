@@ -50,8 +50,8 @@ namespace HolaMundo
                 command = Console.ReadLine();
                 wordToList( command);
                 
-                //arguments= string.Join(" ", words_command[1..]);
-                Console.WriteLine(words_command.Count);
+                arguments= string.Join(" ", words_command[1..]);
+                
 
              
 
