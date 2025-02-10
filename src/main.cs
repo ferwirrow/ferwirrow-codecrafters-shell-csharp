@@ -227,7 +227,7 @@ namespace HolaMundo
         foreach (var exe in words_command[1..])
         {
             
-            Console.WriteLine(exe);
+            
             
            runProgramWithCat(exe); 
 
