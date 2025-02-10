@@ -49,7 +49,12 @@ namespace HolaMundo
                 Console.Write("$ ");
                 command = Console.ReadLine();
                 wordToList( command);
-                arguments= string.Join(" ", words_command[1..]);
+                
+                //arguments= string.Join(" ", words_command[1..]);
+                Console.WriteLine(words_command.Count);
+
+             
+
 
                 if(command == "exit 0") break;
                 else if(words_command[0]=="echo") echo();
@@ -68,21 +73,52 @@ namespace HolaMundo
 
     
     static void wordToList( string word ){  // convierte el texto a lista de words
+         words_command.Clear();
+
+         bool singlequoting = false;
+
+         
+         string wordfinal = "";
+        
+        for (int i = 0; i < word.Length; i++)
+        {
+            if(singlequoting==true && word[i]=='\''){
+                
+                singlequoting = false;
+                
+
+            }
+            else if(singlequoting ==false && word[i]=='\''){
+                singlequoting = true;
+            }           
+            else if(singlequoting==true)
+            {
+                if(word[i]=='\\'){
+                   // wordfinal += '\\';
+                    wordfinal += word[i];
+                }
+                else{
+                    wordfinal += word[i];
+                }
+                
+            }
+            else if(singlequoting==false && word[i]!= ' '){
+
+                wordfinal += word[i];
+                
+
+            }
+             if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0){
+                words_command.Add(wordfinal);
+                
+                wordfinal = "";
+
+            }
+            
+        }
 
         
-        words_command.Clear();
-        MatchCollection matches = Regex.Matches(word, pattern);
-        foreach (Match match in matches)
-        {
-            if (match.Groups[1].Success)
-            {
-                words_command.Add(match.Groups[1].Value);  // Guardamos el contenido dentro de las comillas
-            }
-            else
-            {
-                words_command.Add(match.Value);  // Guardamos la palabra que está fuera de las comillas
-            }
-        }
+        
 
         
     
@@ -112,7 +148,7 @@ namespace HolaMundo
 
     static void wrongCommand(){
 
-        Console.WriteLine($"{command}: command not found");
+        Console.WriteLine($"{words_command[0]}: command not found");
         
 
 
@@ -122,11 +158,28 @@ namespace HolaMundo
 
         NoInvalid = true;
 
-        if(types.ContainsKey(words_command[1]) ){
+        try
+        {
+            if(types.ContainsKey(words_command[1]) ){
             Console.WriteLine($"{words_command[1]} is a shell builtin");
 
+            }
         }
-        else Console.WriteLine(searchExeInPath(words_command[1]));
+        catch (System.Exception)
+        {
+            
+            try
+            {
+                Console.WriteLine(searchExeInPath(words_command[1]));  //regresa lo que se encontro
+            }
+            catch (System.Exception)
+            {
+            
+            
+        }
+        }
+        
+         
 
         
             
@@ -136,7 +189,7 @@ namespace HolaMundo
 
     }
 
-    static string searchExeInPath(string exe){
+    static string searchExeInPath(string exe){  //busca el ejecutable el path
         
         string resultado = $"{exe}: not found";
         string path = Environment.GetEnvironmentVariable("PATH");
