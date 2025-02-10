@@ -141,7 +141,7 @@ namespace HolaMundo
             }
             
         }
-        Console.WriteLine(words_command.Count);
+        //Console.WriteLine(words_command.Count);
 
         
         
