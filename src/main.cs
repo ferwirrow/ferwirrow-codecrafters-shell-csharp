@@ -222,8 +222,12 @@ namespace HolaMundo
 
     static void cat(){
 
+
+
         foreach (var exe in words_command[1..])
         {
+            
+            if(File.Exists(exe)) Console.WriteLine("existe el exe");
            runProgramNoarguments(exe); 
 
         }
