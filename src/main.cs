@@ -310,6 +310,7 @@ namespace HolaMundo
         }
         catch (Exception )
         {
+            Console.WriteLine("quien sabe");
             Console.WriteLine($"{exe}: not found");
             
         }
