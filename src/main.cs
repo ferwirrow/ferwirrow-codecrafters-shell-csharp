@@ -86,150 +86,68 @@ namespace HolaMundo
         }
 
     
-    static void wordToList( string word ){  // convierte el texto a lista de words
+    static void wordToList( string input ){  // convierte el texto a lista de words
          words_command.Clear();
 
-         bool singlequoting = false;
-         bool doubleQuoting = false;
+         bool singleQuoting = false;
+        bool doubleQuoting = false;
+        bool escapeNext = false;
 
-         
-         string wordfinal = "";
-         
-        
-        for (int i = 0; i < word.Length; i++)
-            
+        string wordfinal = "";
+
+        for (int i = 0; i < input.Length; i++)
         {
-            
-           
-           if (word[i] == '\\')
-           {
-                
-                {
-                      if (i < word.Length - 1 && word[i] == '\\' && singlequoting == false && doubleQuoting==false )
-                        {
-                            wordfinal += word[i+1];
-                            if (i == word.Length-1)
-                        {
-                            words_command.Add(wordfinal);
-                            continue;
-                        }
-                            i += 1;
+            char current = input[i];
 
-                            if (i >= word.Length-1)
-                        {
-                            words_command.Add(wordfinal);
-                            continue;
-                        }
-
-
-
-                            
-                            
-                            continue;
-                        }
-                        
-                }
-                 
-                {
-                    
-                    
-                }
-           }
-
-            
-
-
-            if(singlequoting==true && word[i]=='\''){
-                
-                singlequoting = false;
-                
-
-            }
-            else if(singlequoting ==false && word[i]=='\'' && doubleQuoting== false){
-                singlequoting = true;
-                
+            // Manejo de escape (\)
+            if (escapeNext)
+            {
+                wordfinal += current;
+                escapeNext = false;
                 continue;
-            } 
-            if(doubleQuoting==true && word[i]== '"' ){
-                doubleQuoting = false;
-
             }
-            else if (doubleQuoting==false && word[i]== '"' && singlequoting==false)
+
+            if (current == '\\')
             {
-                doubleQuoting = true;
+                escapeNext = true;
+                continue;
             }
 
-           
-                     
-            if(singlequoting==true)
+            // Manejo de comillas simples
+            if (current == '\'' && !doubleQuoting)
             {
-                if(word[i]=='\\'){
-                   // wordfinal += '\\';
-                    wordfinal += word[i];
-                }
-                else{
-                    wordfinal += word[i];
-                }
-                
+                singleQuoting = !singleQuoting;
+                continue;
             }
 
+            // Manejo de comillas dobles
+            if (current == '"' && !singleQuoting)
+            {
+                doubleQuoting = !doubleQuoting;
+                continue;
+            }
 
-            if(doubleQuoting== true && word[i]!='\"' && singlequoting == false ){
-
-                if (i < word.Length - 1 && word[i] == '\\' )
+            // Manejo de espacios (división de palabras)
+            if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current))
+            {
+                if (wordfinal.Length > 0)
                 {
-                    wordfinal += word[i+1];
-                    
-                            i += 1;
-                        if (i >= word.Length-1)
-                        {
-                            words_command.Add(wordfinal);
-                            continue;
-                        }
-
-
-                            continue;
-
+                    words_command.Add(wordfinal);
+                    wordfinal = "";
                 }
-
-                else wordfinal += word[i];
+                continue;
             }
 
-            
-            
-             if(singlequoting==false  && word[i] != ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false && word[i] != '\\' ){
-
-                wordfinal += word[i];
-                
-
-            }
-
-           
-           
-             if(singlequoting ==false && (word[i]==' ' || i >= word.Length -1  )&& wordfinal.Length>0 && doubleQuoting == false){
-                
-                words_command.Add(wordfinal);
-                
-               
-                //Console.WriteLine(wordfinal);
-                wordfinal = "";
-
-            }
-
-           
-            
-            
+            // Agregar carácter a la palabra actual
+            wordfinal += current;
         }
-        //Console.WriteLine(words_command.Count);
 
-        
-        
-
-        
-    
-
+        // Agregar la última palabra si no está vacía
+        if (wordfinal.Length > 0)
+        {
+            words_command.Add(wordfinal);
+        }
     }
-
     
     static void echo(){
 
