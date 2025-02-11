@@ -89,10 +89,7 @@ namespace HolaMundo
     static void wordToList( string input ){  // convierte el texto a lista de words
         words_command.Clear();
          
-       
-       
-            
-        bool singleQuoting = false;
+       bool singleQuoting = false;
         bool doubleQuoting = false;
         bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
 
@@ -105,6 +102,7 @@ namespace HolaMundo
             // Si estamos manejando un carácter de escape
             if (escapeNext)
             {
+                wordfinal += '\\'; // Agregar una barra invertida antes del siguiente carácter
                 wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
                 escapeNext = false;
                 continue;
@@ -151,6 +149,13 @@ namespace HolaMundo
         {
             words_command.Add(wordfinal);
         }
+       
+            
+        
+           
+
+            
+       
     
          
          
