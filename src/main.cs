@@ -89,65 +89,122 @@ namespace HolaMundo
     static void wordToList( string input ){  // convierte el texto a lista de words
         words_command.Clear();
          
-      
+  
+
     bool singleQuoting = false;
-bool doubleQuoting = false;
-bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
-
-
-string wordfinal = "";
-
-for (int i = 0; i < input.Length; i++) {
-    char current = input[i];
-
-    // Si estamos manejando un carácter de escape
-    if (escapeNext) {
-        wordfinal += '\\'; // Mantener la barra invertida en la salida
-        wordfinal += current; // Agregar el carácter literal
-        escapeNext = false;
-        continue;
-    }
-
-    // Si encontramos una barra invertida (\), indicamos que el siguiente carácter es un escape
-    if (current == '\\' && (!singleQuoting || doubleQuoting)) {
-        escapeNext = true;
-        continue;
-    }
-
-    // Manejo de comillas simples
-    if (current == '\'' && !doubleQuoting) {
-        singleQuoting = !singleQuoting;
-        continue;
-    }
-
-    // Manejo de comillas dobles
-    if (current == '"' && !singleQuoting) {
-        doubleQuoting = !doubleQuoting;
-        continue;
-    }
-
-    // Manejo de espacios (división de palabras fuera de comillas)
-    if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current)) {
-        if (wordfinal.Length > 0) {
-            words_command.Add(wordfinal);
-            wordfinal = "";
+    bool doubleQuoting = false;
+    bool escapeNext = false;
+    string wordfinal = "";
+    
+    for (int i = 0; i < input.Length; i++)
+    {
+        char current = input[i];
+        
+        // Si se activó el escape en la iteración anterior...
+        if (escapeNext)
+        {
+            if (doubleQuoting)
+            {
+                // Dentro de comillas dobles, solo se “escapan” ", \ y $
+                if (current == '"' || current == '\\' || current == '$')
+                {
+                    // Se añade solo el carácter (se elimina la barra)
+                    wordfinal += current;
+                }
+                else
+                {
+                    // Para cualquier otro carácter se conserva la barra invertida
+                    wordfinal += '\\';
+                    wordfinal += current;
+                }
+            }
+            else
+            {
+                // Fuera de comillas (o en otro contexto) se añade el carácter sin la barra
+                wordfinal += current;
+            }
+            escapeNext = false;
+            continue;
         }
-        continue;
+        
+        // Si encontramos una barra invertida...
+        if (current == '\\')
+        {
+            if (singleQuoting)
+            {
+                // Dentro de comillas simples, la barra es literal
+                wordfinal += '\\';
+            }
+            else if (doubleQuoting)
+            {
+                // Dentro de comillas dobles, comprobamos el siguiente carácter (si existe)
+                if (i + 1 < input.Length)
+                {
+                    char next = input[i + 1];
+                    // Si el siguiente es un carácter especial, activamos el escape
+                    if (next == '"' || next == '\\' || next == '$')
+                    {
+                        escapeNext = true;
+                        continue;
+                    }
+                    else
+                    {
+                        // De lo contrario, se conserva la barra en el resultado
+                        wordfinal += '\\';
+                        continue;
+                    }
+                }
+                else
+                {
+                    // Si la barra está al final, se añade literalmente
+                    wordfinal += '\\';
+                }
+            }
+            else
+            {
+                // Fuera de cualquier comilla, la barra escapa el siguiente carácter
+                escapeNext = true;
+                continue;
+            }
+            continue;
+        }
+        
+        // Procesar comillas simples (sólo si no estamos en comillas dobles)
+        if (current == '\'' && !doubleQuoting)
+        {
+            singleQuoting = !singleQuoting;
+            continue;
+        }
+        
+        // Procesar comillas dobles (sólo si no estamos en comillas simples)
+        if (current == '"' && !singleQuoting)
+        {
+            doubleQuoting = !doubleQuoting;
+            continue;
+        }
+        
+        // Separador: fuera de comillas, el espacio finaliza un token
+        if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current))
+        {
+            if (wordfinal.Length > 0)
+            {
+                words_command.Add(wordfinal);
+                wordfinal = "";
+            }
+            continue;
+        }
+        
+        // Agregar el carácter al token actual
+        wordfinal += current;
     }
+    
+    // Se añade el último token, si existe
+    if (wordfinal.Length > 0)
+    {
+        words_command.Add(wordfinal);
+    }
+  
 
-    // Agregar el carácter al resultado final
-    wordfinal += current;
-}
-
-// Agregar la última palabra si no está vacía
-if (wordfinal.Length > 0) {
-    words_command.Add(wordfinal);
-}
-
-// Imprimir los argumentos procesados para depuración
-foreach (string word in words_command) {
-    Console.WriteLine(word);
-}
 
    
      
