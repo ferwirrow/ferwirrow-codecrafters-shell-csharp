@@ -48,7 +48,11 @@ namespace HolaMundo
             for (;;)
                 {
                 Console.Write("$ ");
-                command = Console.ReadLine();
+                 command = Console.ReadLine();
+        
+                // Reemplazar todas las secuencias de doble barra invertida por una sola barra invertida
+                
+                
                 wordToList( command);
                 
                 if (words_command.Count >1)
@@ -89,9 +93,30 @@ namespace HolaMundo
 
          
          string wordfinal = "";
+         
         
         for (int i = 0; i < word.Length; i++)
+            
         {
+            
+            if(word[i]== ' '){
+                try
+                {
+                    if (word[i-1]=='\\')
+                    {
+                        wordfinal += word[i];
+                        continue;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    
+                    
+                }
+
+            }
+
+
             if(singlequoting==true && word[i]=='\''){
                 
                 singlequoting = false;
@@ -100,6 +125,7 @@ namespace HolaMundo
             }
             else if(singlequoting ==false && word[i]=='\'' && doubleQuoting== false){
                 singlequoting = true;
+                
                 continue;
             } 
             if(doubleQuoting==true && word[i]== '"' ){
@@ -133,42 +159,27 @@ namespace HolaMundo
                else wordfinal += word[i];
             }
 
-
             
-            if(singlequoting==false  && word[i] != ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false && word[i]!='\\'){
+            
+             if(singlequoting==false  && word[i] != ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false ){
 
                 wordfinal += word[i];
                 
 
             }
 
-            if(word[i]== '\\' ){
-                try
-                {
-                   if (word[i] == '\\' && word[i+1]=='\\')
-                   {
-                        
-                        wordfinal += word[i+2];
-                        i += 2;
-                        continue;
-
-                   } 
-                }
-                catch (Exception ex)
-                {
-                    
-                    
-                }
-            }
+           
            
              if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0 && doubleQuoting == false){
+                
                 words_command.Add(wordfinal);
                 
                
-
+                //Console.WriteLine(wordfinal);
                 wordfinal = "";
 
             }
+            
             
         }
         //Console.WriteLine(words_command.Count);
