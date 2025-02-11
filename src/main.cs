@@ -100,22 +100,7 @@ namespace HolaMundo
             
         {
             
-            if(word[i]== ' '){
-                try
-                {
-                    if (word[i-1]=='\\')
-                    {
-                        wordfinal += word[i];
-                        continue;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    
-                    
-                }
-
-            }
+           
            if (word[i] == '\\')
            {
                 
@@ -123,10 +108,26 @@ namespace HolaMundo
                       if (i < word.Length - 1 && word[i] == '\\' && singlequoting == false && doubleQuoting==false )
                         {
                             wordfinal += word[i+1];
+                            if (i == word.Length-1)
+                        {
+                            words_command.Add(wordfinal);
+                            continue;
+                        }
+                            i += 1;
+
+                            if (i >= word.Length-1)
+                        {
+                            words_command.Add(wordfinal);
+                            continue;
+                        }
+
+
+
                             
                             
                             continue;
                         }
+                        
                 }
                  
                 {
