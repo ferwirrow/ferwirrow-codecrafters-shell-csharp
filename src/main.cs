@@ -101,13 +101,26 @@ for (int i = 0; i < input.Length; i++) {
 
     // Si estamos manejando un carácter de escape
     if (escapeNext) {
-        wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
+        if (doubleQuoting) {
+            // Manejar secuencias de escape dentro de comillas dobles
+            switch (current) {
+                case 'n': wordfinal += '\n'; break;
+                case 't': wordfinal += '\t'; break;
+                case 'r': wordfinal += '\r'; break;
+                case 'b': wordfinal += '\b'; break;
+                case '\\': wordfinal += '\\'; break;
+                case '"': wordfinal += '"'; break;
+                default: wordfinal += '\\' + current; break; // Cualquier otro carácter se mantiene con la barra
+            }
+        } else {
+            wordfinal += current; // Fuera de comillas dobles, solo agregar el carácter
+        }
         escapeNext = false;
         continue;
     }
 
     // Si encontramos una barra invertida (\), indicamos que el siguiente carácter es un escape
-    if (current == '\\') {
+    if (current == '\\' && (!singleQuoting || doubleQuoting)) {
         escapeNext = true;
         continue;
     }
@@ -143,6 +156,8 @@ if (wordfinal.Length > 0) {
 }
 
 // Imprimir los argumentos procesados para depuración
+
+
 
     }
 
