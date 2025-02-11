@@ -87,9 +87,8 @@ namespace HolaMundo
 
     
     static void wordToList( string input ){  // convierte el texto a lista de words
-         words_command.Clear();
-
-         bool singleQuoting = false;
+        List<string> words_command = new List<string>();
+        bool singleQuoting = false;
         bool doubleQuoting = false;
         bool escapeNext = false;
 
@@ -99,7 +98,7 @@ namespace HolaMundo
         {
             char current = input[i];
 
-            // Si el carácter es de escape
+            // Manejo de escape (\)
             if (escapeNext)
             {
                 wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
@@ -109,7 +108,7 @@ namespace HolaMundo
 
             if (current == '\\')
             {
-                escapeNext = true;
+                escapeNext = true;  // Marcar que el siguiente carácter es un escape
                 continue;
             }
 
@@ -147,11 +146,9 @@ namespace HolaMundo
         {
             words_command.Add(wordfinal);
         }
-
-        // Aquí puedes usar `words_command` según sea necesario
     }
-
-           
+       
+          
 
          
 
