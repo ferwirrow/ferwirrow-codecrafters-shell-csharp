@@ -92,7 +92,7 @@ namespace HolaMundo
            
        bool singleQuoting = false;
         bool doubleQuoting = false;
-        bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal (como una barra invertida)
+        bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
 
         string wordfinal = "";
 
@@ -149,7 +149,9 @@ namespace HolaMundo
         {
             words_command.Add(wordfinal);
         }
-
+         
+         
+              
            
 
         
