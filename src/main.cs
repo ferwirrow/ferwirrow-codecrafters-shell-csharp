@@ -89,7 +89,8 @@ namespace HolaMundo
     static void wordToList( string input ){  // convierte el texto a lista de words
         words_command.Clear();
          
-       bool singleQuoting = false;
+      
+    bool singleQuoting = false;
 bool doubleQuoting = false;
 bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
 
@@ -101,20 +102,8 @@ for (int i = 0; i < input.Length; i++) {
 
     // Si estamos manejando un carácter de escape
     if (escapeNext) {
-        if (doubleQuoting) {
-            // Manejar secuencias de escape dentro de comillas dobles
-            switch (current) {
-                case 'n': wordfinal += '\n'; break;
-                case 't': wordfinal += '\t'; break;
-                case 'r': wordfinal += '\r'; break;
-                case 'b': wordfinal += '\b'; break;
-                case '\\': wordfinal += '\\'; break;
-                case '"': wordfinal += '"'; break;
-                default: wordfinal += '\\' + current; break; // Cualquier otro carácter se mantiene con la barra
-            }
-        } else {
-            wordfinal += current; // Fuera de comillas dobles, solo agregar el carácter
-        }
+        wordfinal += '\\'; // Mantener la barra invertida en la salida
+        wordfinal += current; // Agregar el carácter literal
         escapeNext = false;
         continue;
     }
@@ -156,7 +145,14 @@ if (wordfinal.Length > 0) {
 }
 
 // Imprimir los argumentos procesados para depuración
+foreach (string word in words_command) {
+    Console.WriteLine(word);
+}
 
+   
+     
+
+ 
 
 
     }
