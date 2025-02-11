@@ -124,24 +124,54 @@ namespace HolaMundo
                 }
                 
             }
-            if(singlequoting==false && word[i]!= ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false){
+
+
+            if(doubleQuoting== true && word[i]!='\"' ){
+                if(word[i]=='\\'){
+                
+                }
+               else wordfinal += word[i];
+            }
+
+
+            
+            if(singlequoting==false  && word[i] != ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false && word[i]!='\\'){
 
                 wordfinal += word[i];
                 
 
             }
-            if(doubleQuoting== true && word[i]!='\"' ){
-                wordfinal += word[i];
+
+            if(word[i]== '\\' ){
+                try
+                {
+                   if (word[i] == '\\' && word[i+1]=='\\')
+                   {
+                        
+                        wordfinal += word[i+2];
+                        i += 2;
+                        continue;
+
+                   } 
+                }
+                catch (Exception ex)
+                {
+                    
+                    
+                }
             }
+           
              if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0 && doubleQuoting == false){
                 words_command.Add(wordfinal);
                 
+               
+
                 wordfinal = "";
 
             }
             
         }
-        //Console.WriteLine(words_command.Count);
+        Console.WriteLine(words_command.Count);
 
         
         
