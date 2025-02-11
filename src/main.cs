@@ -99,10 +99,10 @@ namespace HolaMundo
         {
             char current = input[i];
 
-            // Manejo de escape (\)
+            // Si el carácter es de escape
             if (escapeNext)
             {
-                wordfinal += current;
+                wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
                 escapeNext = false;
                 continue;
             }
@@ -138,7 +138,7 @@ namespace HolaMundo
                 continue;
             }
 
-            // Agregar carácter a la palabra actual
+            // Agregar carácter normal
             wordfinal += current;
         }
 
@@ -147,7 +147,31 @@ namespace HolaMundo
         {
             words_command.Add(wordfinal);
         }
+
+        // Aquí puedes usar `words_command` según sea necesario
     }
+
+           
+
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+    
     
     static void echo(){
 
