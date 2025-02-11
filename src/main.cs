@@ -89,8 +89,10 @@ namespace HolaMundo
     static void wordToList( string input ){  // convierte el texto a lista de words
         words_command.Clear();
          
-  
-
+    
+{
+    words_command.Clear();
+    
     bool singleQuoting = false;
     bool doubleQuoting = false;
     bool escapeNext = false;
@@ -100,90 +102,64 @@ namespace HolaMundo
     {
         char current = input[i];
         
-        // Si se activó el escape en la iteración anterior...
+        // Si se indicó que el siguiente carácter es escapado...
         if (escapeNext)
         {
             if (doubleQuoting)
             {
-                // Dentro de comillas dobles, solo se “escapan” ", \ y $
-                if (current == '"' || current == '\\' || current == '$')
+                // Dentro de comillas dobles, solo se “desescapan” ciertos caracteres:
+                if (current == '"' || current == '$' || current == '\\' || current == '\n')
                 {
-                    // Se añade solo el carácter (se elimina la barra)
+                    // Se agrega solo el carácter (se elimina la barra)
                     wordfinal += current;
                 }
                 else
                 {
-                    // Para cualquier otro carácter se conserva la barra invertida
+                    // Para cualquier otro, se conserva la barra
                     wordfinal += '\\';
                     wordfinal += current;
                 }
             }
             else
             {
-                // Fuera de comillas (o en otro contexto) se añade el carácter sin la barra
+                // Fuera de comillas, se quita la barra y se agrega solo el carácter
                 wordfinal += current;
             }
             escapeNext = false;
             continue;
         }
         
-        // Si encontramos una barra invertida...
+        // Si encontramos una barra invertida
         if (current == '\\')
         {
             if (singleQuoting)
             {
                 // Dentro de comillas simples, la barra es literal
-                wordfinal += '\\';
-            }
-            else if (doubleQuoting)
-            {
-                // Dentro de comillas dobles, comprobamos el siguiente carácter (si existe)
-                if (i + 1 < input.Length)
-                {
-                    char next = input[i + 1];
-                    // Si el siguiente es un carácter especial, activamos el escape
-                    if (next == '"' || next == '\\' || next == '$')
-                    {
-                        escapeNext = true;
-                        continue;
-                    }
-                    else
-                    {
-                        // De lo contrario, se conserva la barra en el resultado
-                        wordfinal += '\\';
-                        continue;
-                    }
-                }
-                else
-                {
-                    // Si la barra está al final, se añade literalmente
-                    wordfinal += '\\';
-                }
+                wordfinal += current;
             }
             else
             {
-                // Fuera de cualquier comilla, la barra escapa el siguiente carácter
+                // Fuera de comillas (o en dobles) la marca para escapar el siguiente carácter
                 escapeNext = true;
-                continue;
             }
             continue;
         }
         
-        // Procesar comillas simples (sólo si no estamos en comillas dobles)
+        // Manejo de comillas simples (solo fuera de comillas dobles)
         if (current == '\'' && !doubleQuoting)
         {
             singleQuoting = !singleQuoting;
             continue;
         }
         
-        // Procesar comillas dobles (sólo si no estamos en comillas simples)
+        // Manejo de comillas dobles (solo fuera de comillas simples)
         if (current == '"' && !singleQuoting)
         {
             doubleQuoting = !doubleQuoting;
             continue;
         }
         
-        // Separador: fuera de comillas, el espacio finaliza un token
+        // Si se encuentra un espacio fuera de comillas, se cierra el token
         if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current))
         {
             if (wordfinal.Length > 0)
@@ -198,14 +174,16 @@ namespace HolaMundo
         wordfinal += current;
     }
     
-    // Se añade el último token, si existe
+    // Agregar el último token, si existe
     if (wordfinal.Length > 0)
     {
         words_command.Add(wordfinal);
     }
-  
+    
+}
 
-
+           
+       
    
      
 
