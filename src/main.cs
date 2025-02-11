@@ -87,7 +87,7 @@ namespace HolaMundo
 
     
     static void wordToList( string input ){  // convierte el texto a lista de words
-        List<string> words_command = new List<string>();
+        words_command.Clear();
         bool singleQuoting = false;
         bool doubleQuoting = false;
         bool escapeNext = false;
