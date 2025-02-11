@@ -120,9 +120,9 @@ namespace HolaMundo
            {
                 
                 {
-                      if (i < word.Length - 1 && word[i] == '\\' && word[i + 1] == '\\' && singlequoting == false && doubleQuoting==false )
+                      if (i < word.Length - 1 && word[i] == '\\' && singlequoting == false && doubleQuoting==false )
                         {
-                            wordfinal += '\\';
+                            wordfinal += word[i+1];
                             
                             
                             continue;
