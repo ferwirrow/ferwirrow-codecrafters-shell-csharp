@@ -90,7 +90,7 @@ namespace HolaMundo
         words_command.Clear();
          
            
-        bool singleQuoting = false;
+       bool singleQuoting = false;
         bool doubleQuoting = false;
         bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal (como una barra invertida)
 
@@ -149,16 +149,9 @@ namespace HolaMundo
         {
             words_command.Add(wordfinal);
         }
-   
+
            
 
-        // Simulamos la ejecución del comando, como si fuera un "cat" o "echo"
-        
-            // Si estamos manejando un carácter de escape
-       
-          
-
-        // Simulamos la ejecución del comando, como si fuera un "cat" o "echo"
         
     }
        
