@@ -124,7 +124,7 @@ namespace HolaMundo
                         {
                             wordfinal += '\\';
                             
-                            Console.WriteLine(wordfinal);
+                            
                             continue;
                         }
                 }
