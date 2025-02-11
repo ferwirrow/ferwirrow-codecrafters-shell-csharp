@@ -174,11 +174,25 @@ namespace HolaMundo
             }
 
 
-            if(doubleQuoting== true && word[i]!='\"' ){
-                if(word[i]=='\\'){
-                
+            if(doubleQuoting== true && word[i]!='\"' && singlequoting == false ){
+
+                if (i < word.Length - 1 && word[i] == '\\' )
+                {
+                    wordfinal += word[i+1];
+                    
+                            i += 1;
+                        if (i >= word.Length-1)
+                        {
+                            words_command.Add(wordfinal);
+                            continue;
+                        }
+
+
+                            continue;
+
                 }
-               else wordfinal += word[i];
+
+                else wordfinal += word[i];
             }
 
             
@@ -305,6 +319,8 @@ namespace HolaMundo
     }
 
     static void cat(){
+
+        
 
 
 
