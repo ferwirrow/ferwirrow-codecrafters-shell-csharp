@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 
 
@@ -15,7 +16,14 @@ namespace HolaMundo
      
        static string pattern = @"'(.*?)'|\S+";
        
-
+    enum ParseState 
+{
+    Normal,         // Fuera de cualquier comilla
+    Escaped,        // Escapando en modo normal (fuera de comillas)
+    InSingleQuote,  // Dentro de comillas simples
+    InDoubleQuote,  // Dentro de comillas dobles
+    EscapedInDouble // Escapando dentro de comillas dobles
+}
        
 
        static bool NoInvalid = false;
@@ -90,97 +98,105 @@ namespace HolaMundo
         words_command.Clear();
          
     
-{
-    words_command.Clear();
-    
-    bool singleQuoting = false;
-    bool doubleQuoting = false;
-    bool escapeNext = false;
-    string wordfinal = "";
+        var token = new StringBuilder();
+    ParseState state = ParseState.Normal;
     
     for (int i = 0; i < input.Length; i++)
     {
-        char current = input[i];
-        
-        // Si se indicó que el siguiente carácter es escapado...
-        if (escapeNext)
+        char c = input[i];
+        switch (state)
         {
-            if (doubleQuoting)
-            {
-                // Dentro de comillas dobles, solo se “desescapan” ciertos caracteres:
-                if (current == '"' || current == '$' || current == '\\' || current == '\n')
+            case ParseState.Normal:
+                if (char.IsWhiteSpace(c))
                 {
-                    // Se agrega solo el carácter (se elimina la barra)
-                    wordfinal += current;
+                    // Fin del token si se encontró espacio y se tiene contenido
+                    if (token.Length > 0)
+                    {
+                        words_command.Add(token.ToString());
+                        token.Clear();
+                    }
+                }
+                else if (c == '\\')
+                {
+                    // Activa el modo escapado
+                    state = ParseState.Escaped;
+                }
+                else if (c == '\'')
+                {
+                    // Entra en comillas simples
+                    state = ParseState.InSingleQuote;
+                }
+                else if (c == '"')
+                {
+                    // Entra en comillas dobles
+                    state = ParseState.InDoubleQuote;
                 }
                 else
                 {
-                    // Para cualquier otro, se conserva la barra
-                    wordfinal += '\\';
-                    wordfinal += current;
+                    token.Append(c);
                 }
-            }
-            else
-            {
-                // Fuera de comillas, se quita la barra y se agrega solo el carácter
-                wordfinal += current;
-            }
-            escapeNext = false;
-            continue;
+                break;
+
+            case ParseState.Escaped:
+                // Fuera de comillas: el carácter siguiente se añade sin la barra
+                token.Append(c);
+                state = ParseState.Normal;
+                break;
+
+            case ParseState.InSingleQuote:
+                if (c == '\'')
+                {
+                    // Finaliza comillas simples
+                    state = ParseState.Normal;
+                }
+                else
+                {
+                    // Dentro de comillas simples se toma todo literal
+                    token.Append(c);
+                }
+                break;
+
+            case ParseState.InDoubleQuote:
+                if (c == '"')
+                {
+                    // Finaliza comillas dobles
+                    state = ParseState.Normal;
+                }
+                else if (c == '\\')
+                {
+                    // En comillas dobles se activa el escape pero con comportamiento especial
+                    state = ParseState.EscapedInDouble;
+                }
+                else
+                {
+                    token.Append(c);
+                }
+                break;
+
+            case ParseState.EscapedInDouble:
+                // En comillas dobles, solo se "desescapan" ciertos caracteres
+                if (c == '"' || c == '$' || c == '\\')
+                {
+                    // Se añade solo el carácter especial sin la barra
+                    token.Append(c);
+                }
+                else
+                {
+                    // Si no es uno de los especiales, se conserva la barra
+                    token.Append('\\');
+                    token.Append(c);
+                }
+                state = ParseState.InDoubleQuote;
+                break;
         }
-        
-        // Si encontramos una barra invertida
-        if (current == '\\')
-        {
-            if (singleQuoting)
-            {
-                // Dentro de comillas simples, la barra es literal
-                wordfinal += current;
-            }
-            else
-            {
-                // Fuera de comillas (o en dobles) la marca para escapar el siguiente carácter
-                escapeNext = true;
-            }
-            continue;
-        }
-        
-        // Manejo de comillas simples (solo fuera de comillas dobles)
-        if (current == '\'' && !doubleQuoting)
-        {
-            singleQuoting = !singleQuoting;
-            continue;
-        }
-        
-        // Manejo de comillas dobles (solo fuera de comillas simples)
-        if (current == '"' && !singleQuoting)
-        {
-            doubleQuoting = !doubleQuoting;
-            continue;
-        }
-        
-        // Si se encuentra un espacio fuera de comillas, se cierra el token
-        if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current))
-        {
-            if (wordfinal.Length > 0)
-            {
-                words_command.Add(wordfinal);
-                wordfinal = "";
-            }
-            continue;
-        }
-        
-        // Agregar el carácter al token actual
-        wordfinal += current;
     }
     
-    // Agregar el último token, si existe
-    if (wordfinal.Length > 0)
+    // Agregar el último token si no está vacío
+    if (token.Length > 0)
     {
-        words_command.Add(wordfinal);
+        words_command.Add(token.ToString());
     }
     
-}
 
            
        
