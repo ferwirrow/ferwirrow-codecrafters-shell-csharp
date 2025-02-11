@@ -49,6 +49,7 @@ namespace HolaMundo
                 {
                 Console.Write("$ ");
                  command = Console.ReadLine();
+                 
         
                 // Reemplazar todas las secuencias de doble barra invertida por una sola barra invertida
                 
@@ -115,6 +116,26 @@ namespace HolaMundo
                 }
 
             }
+           if (word[i] == '\\')
+           {
+                
+                {
+                      if (i < word.Length - 1 && word[i] == '\\' && word[i + 1] == '\\' && singlequoting == false && doubleQuoting==false )
+                        {
+                            wordfinal += '\\';
+                            
+                            Console.WriteLine(wordfinal);
+                            continue;
+                        }
+                }
+                 
+                {
+                    
+                    
+                }
+           }
+
+            
 
 
             if(singlequoting==true && word[i]=='\''){
@@ -161,7 +182,7 @@ namespace HolaMundo
 
             
             
-             if(singlequoting==false  && word[i] != ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false ){
+             if(singlequoting==false  && word[i] != ' ' && word[i] != '\'' && word[i]!= '"' && doubleQuoting==false && word[i] != '\\' ){
 
                 wordfinal += word[i];
                 
@@ -170,7 +191,7 @@ namespace HolaMundo
 
            
            
-             if(singlequoting ==false && (word[i]==' ' || i == word.Length -1  )&& wordfinal.Length>0 && doubleQuoting == false){
+             if(singlequoting ==false && (word[i]==' ' || i >= word.Length -1  )&& wordfinal.Length>0 && doubleQuoting == false){
                 
                 words_command.Add(wordfinal);
                 
@@ -179,6 +200,8 @@ namespace HolaMundo
                 wordfinal = "";
 
             }
+
+           
             
             
         }
