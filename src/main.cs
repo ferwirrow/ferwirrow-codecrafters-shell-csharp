@@ -90,88 +90,61 @@ namespace HolaMundo
         words_command.Clear();
          
        bool singleQuoting = false;
-        bool doubleQuoting = false;
-        bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
+bool doubleQuoting = false;
+bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
 
-        string wordfinal = "";
 
-        for (int i = 0; i < input.Length; i++)
-        {
-            char current = input[i];
+string wordfinal = "";
 
-            // Si estamos manejando un carácter de escape
-            if (escapeNext)
-            {
-                wordfinal += '\\'; // Agregar una barra invertida antes del siguiente carácter
-                wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
-                escapeNext = false;
-                continue;
-            }
+for (int i = 0; i < input.Length; i++) {
+    char current = input[i];
 
-            // Si encontramos una barra invertida (\), indicamos que el siguiente carácter es un escape
-            if (current == '\\')
-            {
-                escapeNext = true;
-                continue;
-            }
-
-            // Manejo de comillas simples
-            if (current == '\'' && !doubleQuoting)
-            {
-                singleQuoting = !singleQuoting;
-                continue;
-            }
-
-            // Manejo de comillas dobles
-            if (current == '"' && !singleQuoting)
-            {
-                doubleQuoting = !doubleQuoting;
-                continue;
-            }
-
-            // Manejo de espacios (división de palabras fuera de comillas)
-            if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current))
-            {
-                if (wordfinal.Length > 0)
-                {
-                    words_command.Add(wordfinal);
-                    wordfinal = "";
-                }
-                continue;
-            }
-
-            // Agregar el carácter al resultado final
-            wordfinal += current;
-        }
-
-        // Agregar la última palabra si no está vacía
-        if (wordfinal.Length > 0)
-        {
-            words_command.Add(wordfinal);
-        }
-       
-            
-        
-           
-
-            
-       
-    
-         
-         
-              
-           
-
-        
+    // Si estamos manejando un carácter de escape
+    if (escapeNext) {
+        wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
+        escapeNext = false;
+        continue;
     }
-       
-          
 
-         
+    // Si encontramos una barra invertida (\), indicamos que el siguiente carácter es un escape
+    if (current == '\\') {
+        escapeNext = true;
+        continue;
+    }
 
+    // Manejo de comillas simples
+    if (current == '\'' && !doubleQuoting) {
+        singleQuoting = !singleQuoting;
+        continue;
+    }
 
+    // Manejo de comillas dobles
+    if (current == '"' && !singleQuoting) {
+        doubleQuoting = !doubleQuoting;
+        continue;
+    }
 
+    // Manejo de espacios (división de palabras fuera de comillas)
+    if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current)) {
+        if (wordfinal.Length > 0) {
+            words_command.Add(wordfinal);
+            wordfinal = "";
+        }
+        continue;
+    }
 
+    // Agregar el carácter al resultado final
+    wordfinal += current;
+}
+
+// Agregar la última palabra si no está vacía
+if (wordfinal.Length > 0) {
+    words_command.Add(wordfinal);
+}
+
+// Imprimir los argumentos procesados para depuración
+
+    }
 
 
 
