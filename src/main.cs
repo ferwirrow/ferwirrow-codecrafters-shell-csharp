@@ -82,6 +82,7 @@ namespace HolaMundo
 
                 if(command == "exit 0") break;
                 else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>"))) stdout();
+                else if(words_command.Count>=3 && words_command.Contains("2>") ) stderr();
                 else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));
                 else if(words_command[0]=="type") type();
                 else if(words_command[0]=="pwd") pwd();
@@ -274,6 +275,93 @@ static void stdout(){
         File.WriteAllText(archivo, textoStdout);
         
     }
+
+
+}
+
+static int stderr(){
+
+    List<string> argumentos = new List<string>();
+    string textoStderr = "";
+    string exe = words_command[0];
+    string archivo = words_command[words_command.Count -1];
+    string error = "";
+
+    foreach (var item in words_command[1..])
+    {
+        if(item=="2>" ) break;
+        argumentos.Add(item);
+    }
+
+     if (words_command[0]=="echo")
+    {
+        error = echo(argumentos);
+
+        Console.WriteLine(error);
+
+        File.WriteAllText(archivo, "");
+        
+
+       return 0;
+
+    }
+
+
+    ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = exe,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true ,
+                    RedirectStandardError = true
+                    
+                };
+
+                if (argumentos.Count >=1)
+                {
+                     foreach (var i in argumentos)
+                        {
+                            startInfo.ArgumentList.Add(i);
+                            
+                        }
+                }
+
+                using(Process process = Process.Start(startInfo)){
+
+                    textoStderr = process.StandardOutput.ReadToEnd();
+                    error = process.StandardError.ReadToEnd();
+                    
+
+                    process.WaitForExit();
+
+                    if (!string.IsNullOrEmpty(textoStderr))
+                    {
+                        Console.Write(textoStderr);
+                    }
+
+                   
+                }
+
+
+            
+
+
+            if (!string.IsNullOrEmpty(error))
+    {
+
+        if (error[error.Length-1]!='\n' )
+        {
+            error += "\n";
+        }
+        
+        File.WriteAllText(archivo, error);
+        
+    }
+
+
+    return 0;
+
+
 
 
 }

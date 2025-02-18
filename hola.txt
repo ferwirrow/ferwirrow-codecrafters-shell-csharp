@@ -1,14 +1,1 @@
-1.txt
-2.txt
-3.txt
-README.md
-bin
-codecrafters-shell.csproj
-codecrafters-shell.sln
-codecrafters.yml
-hola.txt
-nose.txt
-obj
-src
-your_program.sh
-
+123 
