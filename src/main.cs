@@ -36,6 +36,17 @@ namespace HolaMundo
 
 
        };
+       static Dictionary<char, string> specialCharacters = new Dictionary<char, string>{
+
+            {'\\', "is a shell builtin"},
+            {'$', "is a shell builtin"},
+            {'"', "is a shell builtin"},
+            {'\n', "is a shell builtin"},
+            
+            
+
+
+       };
        
 
         static void Main(string[] args)
@@ -77,6 +88,11 @@ namespace HolaMundo
                 else if(words_command[0]=="cat") cat();
                 else runProgram(words_command[0], arguments);
 
+
+
+                //debug
+              
+
                
                 
                 }
@@ -99,21 +115,7 @@ namespace HolaMundo
         {
             char current = input[i];
 
-            // Si estamos manejando un carácter de escape
-            /*if (escapeNext)
-            {
-                wordfinal += '\\'; // Agregar una barra invertida antes del siguiente carácter
-                wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
-                escapeNext = false;
-                continue;
-            } 
-
-            // Si encontramos una barra invertida (\), indicamos que el siguiente carácter es un escape
-            if (current == '\\')
-            {
-                escapeNext = true;
-                continue;
-            }*/
+            
 
             // Manejo de comillas simples
             if (current == '\'' && !doubleQuoting)
@@ -152,6 +154,18 @@ namespace HolaMundo
                 }
                 else wordfinal += current;
             }
+            //agregar letras con doble comillas
+            else if (i<input.Length && doubleQuoting == true)
+            {
+                if (current == '\\' && specialCharacters.ContainsKey(input[i+1]))
+                {
+                    wordfinal += input[i+1];
+                    i +=1;
+                    continue;
+                }
+                else wordfinal += current;
+            }
+            
 
             else wordfinal += current;
         }
@@ -368,11 +382,12 @@ namespace HolaMundo
         try
         {
            
+          
+            string exeCorrected = $"\"{exe}\"";  // Escapamos las comillas correctamente para mantenerlas como literales
 
-           
-            ProcessStartInfo startinfo = new ProcessStartInfo();
-            startinfo.FileName = "cat";
-            startinfo.Arguments = $"\"{exe}\"";
+        ProcessStartInfo startinfo = new ProcessStartInfo();
+        startinfo.FileName = "cat";  // Usamos 'sh' para ejecutar el comando
+        startinfo.ArgumentList.Add(exe);
             
 
             Process process = Process.Start(startinfo);
