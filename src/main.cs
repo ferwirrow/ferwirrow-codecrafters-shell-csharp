@@ -82,7 +82,7 @@ namespace HolaMundo
 
                 if(command == "exit 0") break;
                 else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>") || words_command.Contains("1>>") || words_command.Contains(">>"))) stdout();
-                else if(words_command.Count>=3 && words_command.Contains("2>") ) stderr();
+                else if(words_command.Count>=3 && (words_command.Contains("2>") || words_command.Contains("2>>")) ) stderr();
                 else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));
                 else if(words_command[0]=="type") type();
                 else if(words_command[0]=="pwd") pwd();
@@ -194,12 +194,19 @@ namespace HolaMundo
     }
        
 
-static void stdout(){
+static int stdout(){
 
     List<string> argumentos = new List<string>();
     string textoStdout = "";
     string exe = words_command[0];
     string archivo = words_command[words_command.Count -1];
+
+    if (!File.Exists(archivo))
+        {
+            // Si no existe, crea el archivo
+            File.WriteAllText(archivo, "");
+            
+        }
 
     foreach (var item in words_command[1..])
     {
@@ -223,7 +230,10 @@ static void stdout(){
                     FileName = exe,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true 
+                    CreateNoWindow = true ,
+                    RedirectStandardError = true
+
+
                     
                 };
 
@@ -246,13 +256,14 @@ static void stdout(){
 
                     if(!string.IsNullOrEmpty(error)){
 
-                        Console.WriteLine(error);
+                        Console.Write(error);
+                        
                     }
                 }
         }
-        catch (Exception ex)
+        catch (Exception ex )
         {
-            
+           
             
         }
 
@@ -261,14 +272,23 @@ static void stdout(){
       
 
    
-    if (!string.IsNullOrEmpty(textoStdout) && (words_command.Contains(">>") || words_command.Contains("1>>")))
+    if ((!string.IsNullOrEmpty(textoStdout) && words_command.Contains(">>") || words_command.Contains("1>>")))
     {
          if (textoStdout[textoStdout.Length-1]!='\n')
         {
             textoStdout += "\n";
         }
 
-        File.AppendAllText(archivo, textoStdout );
+        
+        try
+        {
+            File.AppendAllText(archivo, textoStdout );
+        }
+        catch (Exception ex)
+        {
+           
+            
+        }
     }
   
 
@@ -280,9 +300,19 @@ static void stdout(){
             textoStdout += "\n";
         }
         
-        File.WriteAllText(archivo, textoStdout);
+       try
+       {
+         File.WriteAllText(archivo, textoStdout);
+       }
+       catch (Exception ex)
+       {
+        
+        
+       }
         
     }
+
+    return 0;
 
 
 }
@@ -290,15 +320,25 @@ static void stdout(){
 static int stderr(){
 
     List<string> argumentos = new List<string>();
-    string textoStderr = "";
+    string textoStderr;
     string exe = words_command[0];
     string archivo = words_command[words_command.Count -1];
     string error = "";
 
+
+   if (!File.Exists(archivo))
+        {
+            // Si no existe, crea el archivo
+            File.WriteAllText(archivo, "");
+            
+        }
+    
+
     foreach (var item in words_command[1..])
     {
-        if(item=="2>" ) break;
+        if(item=="2>" || item == "2>>") break;
         argumentos.Add(item);
+        
     }
 
      if (words_command[0]=="echo")
@@ -306,11 +346,17 @@ static int stderr(){
         error = echo(argumentos);
 
         Console.WriteLine(error);
+        return 0;
 
-        File.WriteAllText(archivo, "");
+        if (argumentos.Contains("2>>"))
+        {
+            File.AppendAllText(archivo, "" );
+        }
+
+        else File.WriteAllText(archivo, "");
         
 
-       return 0;
+       
 
     }
 
@@ -362,15 +408,22 @@ static int stderr(){
             error += "\n";
         }
         
-        File.WriteAllText(archivo, error);
+        if (words_command.Contains("2>>"))
+        {
+            File.AppendAllText(archivo, error);
+            
+            
+        }
+
+        else File.WriteAllText(archivo, error);
         
     }
 
 
-    return 0;
+    
 
 
-
+return 0;
 
 }
           
