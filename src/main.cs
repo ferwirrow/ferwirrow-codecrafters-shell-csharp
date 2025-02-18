@@ -81,7 +81,8 @@ namespace HolaMundo
                 }
 
                 if(command == "exit 0") break;
-                else if(words_command[0]=="echo") echo();
+                else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>"))) stdout();
+                else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));
                 else if(words_command[0]=="type") type();
                 else if(words_command[0]=="pwd") pwd();
                 else if(words_command[0]=="cd") cd();
@@ -191,6 +192,91 @@ namespace HolaMundo
         
     }
        
+
+static void stdout(){
+
+    List<string> argumentos = new List<string>();
+    string textoStdout = "";
+    string exe = words_command[0];
+    string archivo = words_command[words_command.Count -1];
+
+    foreach (var item in words_command[1..])
+    {
+        if(item=="1>" || item ==">") break;
+        argumentos.Add(item);
+    }
+
+    if (words_command[0]=="echo")
+    {
+        textoStdout = echo(argumentos);
+       
+
+    }
+
+    else{
+
+        try
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = exe,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true 
+                    
+                };
+
+                if (argumentos.Count >=1)
+                {
+                     foreach (var i in argumentos)
+                        {
+                            startInfo.ArgumentList.Add(i);
+                            
+                        }
+                }
+
+                using(Process process = Process.Start(startInfo)){
+
+                    textoStdout = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+                    
+
+                    process.WaitForExit();
+
+                    if(!string.IsNullOrEmpty(error)){
+
+                        Console.WriteLine(error);
+                    }
+                }
+        }
+        catch (Exception ex)
+        {
+            
+            
+        }
+
+    }
+
+      
+
+   
+  
+  
+
+    if (!string.IsNullOrEmpty(textoStdout))
+    {
+
+        if (textoStdout[textoStdout.Length-1]!='\n')
+        {
+            textoStdout += "\n";
+        }
+        
+        File.WriteAllText(archivo, textoStdout);
+        
+    }
+
+
+}
           
 
          
@@ -213,19 +299,23 @@ namespace HolaMundo
        
     
     
-    static void echo(){
+    static string echo(List<string> lista){
 
             NoInvalid = true;
+            string wordEcho = "";
 
             
 
-            foreach (string word in words_command[1..])
+            foreach (string word in lista)
             {
-                Console.Write(word + " ");
+                
+                wordEcho += word;
+                wordEcho += " ";
 
             }
 
-            Console.WriteLine();
+            
+            return wordEcho;
 
             
             
@@ -307,14 +397,13 @@ namespace HolaMundo
 
 
 
-        foreach (var exe in words_command[1..])
-        {
+        
             
             
             
-           runProgramWithCat(exe); 
+           runProgramWithCat(); 
 
-        }
+        
 
     }
 
@@ -378,25 +467,48 @@ namespace HolaMundo
 
     }
 
-    static void runProgramWithCat(string exe){
+    static void runProgramWithCat(){
         try
         {
            
-          
-            string exeCorrected = $"\"{exe}\"";  // Escapamos las comillas correctamente para mantenerlas como literales
+         
+
+           // string exeCorrected = $"\"{exe}\"";  // Escapamos las comillas correctamente para mantenerlas como literales
 
         ProcessStartInfo startinfo = new ProcessStartInfo();
+
+        
+
         startinfo.FileName = "cat";  // Usamos 'sh' para ejecutar el comando
-        startinfo.ArgumentList.Add(exe);
+         foreach (var item in words_command[1..])
+          {
+                startinfo.ArgumentList.Add(item);
+          }
+
+          
+
+          
+            Process process = Process.Start(startinfo);
+
             
 
-            Process process = Process.Start(startinfo);
+
             process.WaitForExit();
+
+           
+
+           
+
+
+            
+            
+            
         }
-        catch (Exception )
+        catch (Exception ex)
         {
             
-            Console.WriteLine($"{exe}: not found");
+           Console.WriteLine(ex.Message);
+            
             
         }
     }
