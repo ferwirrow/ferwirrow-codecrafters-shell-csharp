@@ -81,7 +81,7 @@ namespace HolaMundo
                 }
 
                 if(command == "exit 0") break;
-                else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>"))) stdout();
+                else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>") || words_command.Contains("1>>") || words_command.Contains(">>"))) stdout();
                 else if(words_command.Count>=3 && words_command.Contains("2>") ) stderr();
                 else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));
                 else if(words_command[0]=="type") type();
@@ -203,7 +203,7 @@ static void stdout(){
 
     foreach (var item in words_command[1..])
     {
-        if(item=="1>" || item ==">") break;
+        if(item=="1>" || item ==">" || item ==">>" || item =="1>>" ) break;
         argumentos.Add(item);
     }
 
@@ -261,10 +261,18 @@ static void stdout(){
       
 
    
-  
+    if (!string.IsNullOrEmpty(textoStdout) && (words_command.Contains(">>") || words_command.Contains("1>>")))
+    {
+         if (textoStdout[textoStdout.Length-1]!='\n')
+        {
+            textoStdout += "\n";
+        }
+
+        File.AppendAllText(archivo, textoStdout );
+    }
   
 
-    if (!string.IsNullOrEmpty(textoStdout))
+    else if (!string.IsNullOrEmpty(textoStdout))
     {
 
         if (textoStdout[textoStdout.Length-1]!='\n')
