@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 
 
@@ -16,14 +15,7 @@ namespace HolaMundo
      
        static string pattern = @"'(.*?)'|\S+";
        
-    enum ParseState 
-{
-    Normal,         // Fuera de cualquier comilla
-    Escaped,        // Escapando en modo normal (fuera de comillas)
-    InSingleQuote,  // Dentro de comillas simples
-    InDoubleQuote,  // Dentro de comillas dobles
-    EscapedInDouble // Escapando dentro de comillas dobles
-}
+
        
 
        static bool NoInvalid = false;
@@ -97,116 +89,101 @@ namespace HolaMundo
     static void wordToList( string input ){  // convierte el texto a lista de words
         words_command.Clear();
          
-    
-        var token = new StringBuilder();
-    ParseState state = ParseState.Normal;
-    
-    for (int i = 0; i < input.Length; i++)
-    {
-        char c = input[i];
-        switch (state)
+       bool singleQuoting = false;
+        bool doubleQuoting = false;
+        bool escapeNext = false; // Controla si el siguiente carácter debe ser un carácter literal
+
+        string wordfinal = "";
+
+        for (int i = 0; i < input.Length; i++)
         {
-            case ParseState.Normal:
-                if (char.IsWhiteSpace(c))
-                {
-                    // Fin del token si se encontró espacio y se tiene contenido
-                    if (token.Length > 0)
-                    {
-                        words_command.Add(token.ToString());
-                        token.Clear();
-                    }
-                }
-                else if (c == '\\')
-                {
-                    // Activa el modo escapado
-                    state = ParseState.Escaped;
-                }
-                else if (c == '\'')
-                {
-                    // Entra en comillas simples
-                    state = ParseState.InSingleQuote;
-                }
-                else if (c == '"')
-                {
-                    // Entra en comillas dobles
-                    state = ParseState.InDoubleQuote;
-                }
-                else
-                {
-                    token.Append(c);
-                }
-                break;
+            char current = input[i];
 
-            case ParseState.Escaped:
-                // Fuera de comillas: el carácter siguiente se añade sin la barra
-                token.Append(c);
-                state = ParseState.Normal;
-                break;
+            // Si estamos manejando un carácter de escape
+            /*if (escapeNext)
+            {
+                wordfinal += '\\'; // Agregar una barra invertida antes del siguiente carácter
+                wordfinal += current;  // Agregar el carácter tal cual, sin interpretarlo
+                escapeNext = false;
+                continue;
+            } 
 
-            case ParseState.InSingleQuote:
-                if (c == '\'')
-                {
-                    // Finaliza comillas simples
-                    state = ParseState.Normal;
-                }
-                else
-                {
-                    // Dentro de comillas simples se toma todo literal
-                    token.Append(c);
-                }
-                break;
+            // Si encontramos una barra invertida (\), indicamos que el siguiente carácter es un escape
+            if (current == '\\')
+            {
+                escapeNext = true;
+                continue;
+            }*/
 
-            case ParseState.InDoubleQuote:
-                if (c == '"')
-                {
-                    // Finaliza comillas dobles
-                    state = ParseState.Normal;
-                }
-                else if (c == '\\')
-                {
-                    // En comillas dobles se activa el escape pero con comportamiento especial
-                    state = ParseState.EscapedInDouble;
-                }
-                else
-                {
-                    token.Append(c);
-                }
-                break;
+            // Manejo de comillas simples
+            if (current == '\'' && !doubleQuoting)
+            {
+                singleQuoting = !singleQuoting;
+                continue;
+            }
 
-            case ParseState.EscapedInDouble:
-                // En comillas dobles, solo se "desescapan" ciertos caracteres
-                if (c == '"' || c == '$' || c == '\\')
+            // Manejo de comillas dobles
+            if (current == '"' && !singleQuoting)
+            {
+                doubleQuoting = !doubleQuoting;
+                continue;
+            }
+
+            // Manejo de espacios (división de palabras fuera de comillas)
+            if (!singleQuoting && !doubleQuoting && char.IsWhiteSpace(current))
+            {
+                if (wordfinal.Length > 0)
                 {
-                    // Se añade solo el carácter especial sin la barra
-                    token.Append(c);
+                    words_command.Add(wordfinal);
+                    wordfinal = "";
                 }
-                else
+                continue;
+            }
+
+
+            // Agregar el carácter al resultado final sin comillas
+            if (i<input.Length && singleQuoting==false && doubleQuoting==false )
+            {
+                if (current=='\\')
                 {
-                    // Si no es uno de los especiales, se conserva la barra
-                    token.Append('\\');
-                    token.Append(c);
+                    wordfinal += input[i+1];
+                    i += 1;
+                    continue;
                 }
-                state = ParseState.InDoubleQuote;
-                break;
+                else wordfinal += current;
+            }
+
+            else wordfinal += current;
         }
-    }
-    
-    // Agregar el último token si no está vacío
-    if (token.Length > 0)
-    {
-        words_command.Add(token.ToString());
-    }
-    
 
-           
+        // Agregar la última palabra si no está vacía
+        if (wordfinal.Length > 0)
+        {
+            words_command.Add(wordfinal);
+        }
        
-   
-     
+            
+        
+           
 
- 
+            
+       
+    
+         
+         
+              
+           //final de la funcion
 
-
+        
     }
+       
+          
+
+         
+
+
+
+
 
 
 
@@ -292,19 +269,20 @@ namespace HolaMundo
     static string searchExeInPath(string exe){  //busca el ejecutable el path
         
         string resultado = $"{exe}: not found";
-        string path = Environment.GetEnvironmentVariable("PATH");
-        string [] patharray = path.Split(":");
-        foreach (string path1 in patharray)
+        string pathEnv = Environment.GetEnvironmentVariable("PATH");
+        if (string.IsNullOrEmpty(pathEnv))
+            return resultado;
+
+        string[] paths = pathEnv.Split(Path.PathSeparator);
+        foreach (string path in paths)
         {
-            if(File.Exists($@"{path1}/{exe}")){
-                resultado = $@"{path1}/{exe}";
-            }  //confirma si existe el nombre del archivo en un nombre
+            string fullPath = Path.Combine(path, exe);
+            if (File.Exists(fullPath))
+                
+                return fullPath;
         }
-        
-        NoInvalid = false;
 
         return resultado;
-
 
 
     }
@@ -414,23 +392,3 @@ namespace HolaMundo
         
         
         
-        
-        
-        
-        
-        
-        
-       
-
-    
-
-
-
-
-
-
-
-
-
-
-
