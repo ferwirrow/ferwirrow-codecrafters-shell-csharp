@@ -59,19 +59,28 @@ namespace HolaMundo
             for (;;)
                 {
                 Console.Write("$ ");
-                 command = Console.ReadLine();
+                 //command = Console.ReadLine();
+                 command = autocomplete.autoCompletado();
+                 //Console.WriteLine(command);
                  
+                 
+
+             
         
                 // Reemplazar todas las secuencias de doble barra invertida por una sola barra invertida
                 
                 
                 wordToList( command);
+                //Console.WriteLine(words_command.Count);
+
+                
                 
                 if (words_command.Count >1)
                 {
                     arguments= string.Join(" ", words_command[1..]);
                 
                 }
+               
                 
                 
 
@@ -80,15 +89,17 @@ namespace HolaMundo
                     continue;
                 }
 
-                if(command == "exit 0") break;
+                if(words_command[0]=="exit" && words_command[1]=="0") break;
                 else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>") || words_command.Contains("1>>") || words_command.Contains(">>"))) stdout();
                 else if(words_command.Count>=3 && (words_command.Contains("2>") || words_command.Contains("2>>")) ) stderr();
-                else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));
+               else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));
                 else if(words_command[0]=="type") type();
                 else if(words_command[0]=="pwd") pwd();
                 else if(words_command[0]=="cd") cd();
                 else if(words_command[0]=="cat") cat();
                 else runProgram(words_command[0], arguments);
+
+                arguments = ""; // vacia la string de argumentos
 
 
 
@@ -196,30 +207,32 @@ namespace HolaMundo
 
 static int stdout(){
 
-    List<string> argumentos = new List<string>();
+    List<string> argumentos2 = new List<string>();
     string textoStdout = "";
     string exe = words_command[0];
     string archivo = words_command[words_command.Count -1];
 
-    if (!File.Exists(archivo))
+   if (!File.Exists(archivo))
         {
             // Si no existe, crea el archivo
-            File.WriteAllText(archivo, "");
+           File.WriteAllText(archivo, "");
             
         }
 
     foreach (var item in words_command[1..])
     {
         if(item=="1>" || item ==">" || item ==">>" || item =="1>>" ) break;
-        argumentos.Add(item);
+        argumentos2.Add(item);
     }
 
     if (words_command[0]=="echo")
     {
-        textoStdout = echo(argumentos);
+        textoStdout = echo(argumentos2);
        
 
     }
+
+    
 
     else{
 
@@ -237,9 +250,9 @@ static int stdout(){
                     
                 };
 
-                if (argumentos.Count >=1)
+                if (argumentos2.Count >=1)
                 {
-                     foreach (var i in argumentos)
+                     foreach (var i in argumentos2)
                         {
                             startInfo.ArgumentList.Add(i);
                             
@@ -254,9 +267,12 @@ static int stdout(){
 
                     process.WaitForExit();
 
-                    if(!string.IsNullOrEmpty(error)){
+                    if(!string.IsNullOrEmpty(error) ){
 
                         Console.Write(error);
+                        
+                        
+                        
                         
                     }
                 }
@@ -537,7 +553,6 @@ return 0;
 
         return resultado;
 
-
     }
 
     static void cat(){
@@ -570,6 +585,7 @@ return 0;
 
             Process process = Process.Start(startinfo);
             process.WaitForExit();
+            
 
         }
         catch (System.Exception)
