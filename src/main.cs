@@ -89,7 +89,7 @@ namespace HolaMundo
                     continue;
                 }
 
-                if(words_command[0]=="exit" && words_command[1]=="0") break;
+                if(words_command.Count >1 && words_command[0]=="exit" && words_command[1]=="0") break;
                 else if(words_command.Count>=3 && (words_command.Contains(">") || words_command.Contains("1>") || words_command.Contains("1>>") || words_command.Contains(">>"))) stdout();
                 else if(words_command.Count>=3 && (words_command.Contains("2>") || words_command.Contains("2>>")) ) stderr();
                else if(words_command[0]=="echo")Console.WriteLine( echo(words_command[1..]));

@@ -8,7 +8,8 @@ public static class autocomplete
                 List<string> autoCompleteString = new List<string>
             {
                 "echo",
-                "exit"
+                "exit",
+                "type"
             };
 
             string readLine = "";
@@ -17,7 +18,7 @@ public static class autocomplete
             ConsoleKeyInfo actualLetra;
 
             
-
+          
             int lastIndex;
                     
             while (true)
@@ -38,7 +39,9 @@ public static class autocomplete
 
                 if (actualLetra.Key == ConsoleKey.Enter)
                 {
-                   // Console.WriteLine();
+                    //Console.WriteLine(); //comment this for solve stage un3
+                    
+                    
                     break;
                 }
 
@@ -51,7 +54,7 @@ public static class autocomplete
 
                 }
 
-                else if(actualLetra.Key == ConsoleKey.Tab){
+                else if(  !string.IsNullOrEmpty(actualWord) && actualLetra.Key == ConsoleKey.Tab){             
 
                     
 
@@ -70,9 +73,11 @@ public static class autocomplete
                             }
                             Console.Write(word);
                             Console.Write(" ");
+                            readLine += " ";
                             actualWord = ""; // limpia la cadena actual para no se acumele
+                            
                             break;
-                        }
+                        }       
                     }
 
                 }
