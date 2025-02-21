@@ -15,6 +15,9 @@ public static class autocomplete
             string readLine = "";
             string actualWord = "";
 
+            bool tabMultipleMatch = false;
+            List<string> coincidences = new List<string>();
+
             ConsoleKeyInfo actualLetra;
 
             
@@ -28,6 +31,19 @@ public static class autocomplete
                 actualLetra = Console.ReadKey(true);
                 
             
+                if (actualLetra.Key == ConsoleKey.Tab && tabMultipleMatch==true) //manage multiples match in exes with double taps
+                {
+                    Console.WriteLine();
+                    foreach (var item in coincidences)
+                    {
+                        Console.Write(item + "  ");
+
+                    }
+                    Console.WriteLine();
+
+                    Console.Write("$ " + readLine);
+                    continue;
+                }
                 
 
                 if (actualLetra.Key != ConsoleKey.Tab)
@@ -35,6 +51,7 @@ public static class autocomplete
                     Console.Write(actualLetra.KeyChar);
                     readLine += actualLetra.KeyChar;    //guardar cada letra en la string 
                     actualWord += actualLetra.KeyChar;
+                    tabMultipleMatch = false;
                 }
 
                 if (actualLetra.Key == ConsoleKey.Enter)
@@ -49,6 +66,7 @@ public static class autocomplete
 
                     
                     actualWord = "";
+                    tabMultipleMatch = false;
                     continue;
                     
 
@@ -79,7 +97,7 @@ public static class autocomplete
                             break;
                         } 
                         
-                        var coincidences = searchCoincidencesInPath(actualWord);
+                         coincidences = searchCoincidencesInPath(actualWord);
                         if (coincidences.Count == 1)
                         {
                             string wordcoincidence = coincidences[0];
@@ -100,6 +118,11 @@ public static class autocomplete
                             break;
 
 
+                        }
+                        else if(coincidences.Count >1)
+                        {
+                            tabMultipleMatch = true;
+                            Console.Write("\a");
                         }
                         
                          else Console.Write("\a");    
