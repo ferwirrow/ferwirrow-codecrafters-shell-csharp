@@ -77,7 +77,8 @@ public static class autocomplete
                             actualWord = ""; // limpia la cadena actual para no se acumele
                             
                             break;
-                        }       
+                        } 
+                        else Console.Write("\a");      
                     }
 
                 }
