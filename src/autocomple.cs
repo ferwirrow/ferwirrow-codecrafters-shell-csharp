@@ -78,7 +78,32 @@ public static class autocomplete
                             
                             break;
                         } 
-                        else Console.Write("\a");      
+                        
+                        var coincidences = searchCoincidencesInPath(actualWord);
+                        if (coincidences.Count == 1)
+                        {
+                            string wordcoincidence = coincidences[0];
+                            lastIndex = readLine.LastIndexOf(actualWord); 
+                            if (lastIndex != -1)
+                            {
+                                readLine = readLine.Substring(0, lastIndex) + wordcoincidence ;
+                            }
+                            foreach (var letra in actualWord)
+                            {
+                                Console.Write('\b');
+                            }
+                            Console.Write(wordcoincidence);
+                            Console.Write(" ");
+                            readLine += " ";
+                            actualWord = ""; // limpia la cadena actual para no se acumele
+                            
+                            break;
+
+
+                        }
+                        
+                         else Console.Write("\a");    
+                         
                     }
 
                 }
@@ -86,6 +111,39 @@ public static class autocomplete
             }
         
         return readLine;
+        }
+
+        public static List<string> searchCoincidencesInPath(string word){
+
+            string path = Environment.GetEnvironmentVariable("PATH");
+            string[] directories = path.Split(':');
+            List<string> coincidences = new List<string>();
+            string nameFile;
+
+            foreach (var directory in directories)
+            {
+                if (Directory.Exists(directory))
+                {
+                    string[] files = Directory.GetFiles(directory);
+                    foreach (var file in files)
+                    {
+                        nameFile = Path.GetFileName(file);
+                        if(nameFile.StartsWith(word))
+                        {
+
+                            coincidences.Add(nameFile);
+
+                        }
+                    }
+                }
+
+            }
+            coincidences.Sort();
+            return coincidences;
+
+
+
+
         }
 
     }
