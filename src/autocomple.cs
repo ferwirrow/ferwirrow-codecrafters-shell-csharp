@@ -180,6 +180,7 @@ public static class autocomplete
                     string[] files = Directory.GetFiles(directory);
                     foreach (var file in files)
                     {
+                        
                         nameFile = Path.GetFileName(file);
                         if(nameFile.StartsWith(word) && word != "" && !coincidences.Contains(nameFile))
                         {
