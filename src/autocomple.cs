@@ -1,10 +1,12 @@
+using System.Security.Principal;
+
 public static class autocomplete
     {
        
             public static string autoCompletado(){
 
 
-
+                bool builtIn = false;
                 List<string> autoCompleteString = new List<string>
             {
                 "echo",
@@ -26,7 +28,7 @@ public static class autocomplete
                     
             while (true)
             {
-            
+                builtIn = false;
 
                 actualLetra = Console.ReadKey(true);
                 
@@ -42,6 +44,7 @@ public static class autocomplete
                     Console.WriteLine();
 
                     Console.Write("$ " + readLine);
+                    tabMultipleMatch = false;
                     continue;
                 }
                 
@@ -93,10 +96,15 @@ public static class autocomplete
                             Console.Write(" ");
                             readLine += " ";
                             actualWord = ""; // limpia la cadena actual para no se acumele
-                            
+                            builtIn = true;
                             break;
                         } 
+                    }
                         
+                    if (builtIn)
+                    {
+                        continue;
+                    } 
                          coincidences = searchCoincidencesInPath(actualWord);
                         if (coincidences.Count == 1)
                         {
@@ -121,13 +129,35 @@ public static class autocomplete
                         }
                         else if(coincidences.Count >1)
                         {
+                            
+                            if (coincidences[0].Length == coincidences[1].Length)
+                            {
                             tabMultipleMatch = true;
-                            Console.Write("\a");
+                            Console.Write("\a"); 
+                            }
+                            else
+                            {
+                                int index = readLine.LastIndexOf(actualWord);
+                                string palabracoincide = coincidences[0];
+                                if (index != -1)
+                                {
+                                    readLine = readLine.Substring(0, index) + palabracoincide ;
+
+                                }
+                                foreach (var letra in actualWord)
+                                {
+                                    Console.Write('\b');
+                                }
+                                Console.Write(palabracoincide);
+                                actualWord = palabracoincide;
+
+
+                            }
                         }
                         
                          else Console.Write("\a");    
                          
-                    }
+                    // loop for built in funtions
 
                 }
                 
@@ -151,7 +181,7 @@ public static class autocomplete
                     foreach (var file in files)
                     {
                         nameFile = Path.GetFileName(file);
-                        if(nameFile.StartsWith(word))
+                        if(nameFile.StartsWith(word) && word != "" && !coincidences.Contains(nameFile))
                         {
 
                             coincidences.Add(nameFile);
